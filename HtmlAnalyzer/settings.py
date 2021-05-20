@@ -27,8 +27,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG', False)
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 
 # Application definition
 
@@ -102,7 +101,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-CELERY_BROKER_URL = env('broker_credentials')
+CELERY_BROKER_URL = env('BROKER_CREDENTIALS')
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -113,11 +112,6 @@ CELERY_IMPORTS = (
     'core.tasks',
 )
 
-SERVICE_QUEUE = 'service_debug' if DEBUG else 'service'
-
-CELERY_ROUTES = {
-    'handler.tasks.service._update_server_status_in_queue': {'queue': SERVICE_QUEUE},
-}
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

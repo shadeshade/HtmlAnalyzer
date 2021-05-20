@@ -2,7 +2,7 @@ FROM python:3.8-alpine
 
 WORKDIR /usr/src/app
 
-RUN apk update && apk add mysql-dev gcc python3-dev musl-dev
+RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
 
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
@@ -12,4 +12,4 @@ RUN ["chmod", "+x", "/usr/src/app/entrypoint.sh"]
 
 COPY . .
 
-ENTRYPOINT ["sh", "/usr/src/app/entrypoint.sh"]
+# ENTRYPOINT ["sh", "/usr/src/app/entrypoint.sh"]

@@ -1,15 +1,10 @@
 ## Setup/run instructions
 
-Create .env file and add a secret key
-
-```
-SECRET_KEY={}
-
-```
+Create .env file and add environment variables. Open .env.example for samples.
 
 Run the following command to get started:
 ```
-docker-compose up -d --build
+docker-compose up --build
 ```
 
 ## POST /api/v1/tasks/create/

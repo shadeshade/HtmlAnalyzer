@@ -5,4 +5,4 @@ beautifulsoup4==4.9.3
 celery==5.0.5
 redis==3.5.3
 django-environ==0.4.5
-mysqlclient
+psycopg2-binary==2.8.6
