@@ -4,9 +4,7 @@ Create .env file and add a secret key
 
 ```
 SECRET_KEY={}
-POSTGRES_DATABASE={}
-POSTGRES_USER={}
-POSTGRES_PASSWORD={}
+
 ```
 
 Run the following command to get started:

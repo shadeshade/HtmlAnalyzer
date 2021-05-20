@@ -1,4 +1,4 @@
-version: "2"
+version: "3.9"
 
 services:
   core:
@@ -6,7 +6,7 @@ services:
     tty: true
     container_name: core_container
     build: .
-    command: bash -c "python manage.py migrate --noinput && gunicorn HtmlAnalyzer.wsgi:application --bind 0.0.0.0:8000"
+    command: server /export
     env_file:
       - .env
     volumes:
@@ -30,12 +30,27 @@ services:
     volumes:
       - ./database:/var/lib/postgresql/data
   redis:
-      image: redis:alpine
+    image: redis:alpine
   celery:
-    restart: always
     build:
       context: .
-    command: celery -A server worker -l info
+    command: celery -A app worker -l info
+    depends_on:
+      - db
+      - redis
+      - app
+
+  app:
+    build: .
+    env_file:
+      - .env
+    volumes:
+      - ./:/usr/src/app
+    depends_on:
+      - db
+      - core
+    ports:
+      - 8000:8000
 
 volumes:
   db_data:

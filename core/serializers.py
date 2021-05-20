@@ -2,8 +2,9 @@ import requests
 from django.core.validators import URLValidator
 from rest_framework import serializers
 
-from core.helpers import get_random_string
+from core.helpers import get_random_string, normalize_url
 from core.models import Task
+from core.tasks import analyze_html
 
 
 class TaskCreateSerializer(serializers.ModelSerializer):
@@ -16,13 +17,12 @@ class TaskCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         identifier = get_random_string()
+        analyze_html.delay(identifier)
         validated_data = {**validated_data, 'identifier': identifier, }
         return super(TaskCreateSerializer, self).create(validated_data)
 
     def validate_url(self, url):
-        _url = url
-        if 'http://' not in url and 'https://' not in url:
-            _url = 'http://' + url
+        _url = normalize_url(url)
         url_validate = URLValidator()
 
         try:

@@ -1,14 +1,15 @@
-FROM python:3.7.5
+FROM python:3.8-alpine
 
-ENV APP_HOME=/src
+WORKDIR /usr/src/app
 
-RUN mkdir $APP_HOME
-WORKDIR $APP_HOME
+RUN apk update && apk add mysql-dev gcc python3-dev musl-dev
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
-
-COPY requirements.txt /src/
+COPY requirements.txt ./
 RUN pip install -r requirements.txt
 
-COPY . $APP_HOME
+COPY ./entrypoint.sh .
+RUN ["chmod", "+x", "/usr/src/app/entrypoint.sh"]
+
+COPY . .
+
+ENTRYPOINT ["sh", "/usr/src/app/entrypoint.sh"]
