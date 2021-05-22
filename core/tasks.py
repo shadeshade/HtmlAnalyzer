@@ -1,19 +1,15 @@
-import requests
 from bs4 import BeautifulSoup
 
 from HtmlAnalyzer.celery import app
-from core.helpers import normalize_url
+from core.helpers import normalize_url, get_url
 from core.models import Task
 
 
 @app.task
-def analyze_html(identifier):
-    task = Task.objects.get(identifier=identifier)
+def analyze_html(id):
+    task = Task.objects.get(id=id)
     url = normalize_url(task.url)
-    try:
-        source = requests.get(url)
-    except:
-        raise
+    source = get_url(url)
 
     tags_quantity = {}
     soup = BeautifulSoup(source.content, 'html.parser')
@@ -26,4 +22,5 @@ def analyze_html(identifier):
         else:
             tags_quantity[tag_name] = {"count": 1, "nested": nested_quantity}
 
-    return tags_quantity
+    task.analyzed_data = tags_quantity
+    task.save()

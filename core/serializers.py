@@ -17,9 +17,10 @@ class TaskCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         identifier = get_random_string()
-        analyze_html.delay(identifier)
         validated_data = {**validated_data, 'identifier': identifier, }
-        return super(TaskCreateSerializer, self).create(validated_data)
+        task = super(TaskCreateSerializer, self).create(validated_data)
+        analyze_html.delay(id=task.id)
+        return task
 
     def validate_url(self, url):
         _url = normalize_url(url)
@@ -32,8 +33,8 @@ class TaskCreateSerializer(serializers.ModelSerializer):
 
         try:
             requests.get(_url)
-        except:
-            raise serializers.ValidationError("Server is not available")
+        except requests.exceptions.RequestException as e:
+            raise serializers.ValidationError(e)
 
         return url
 
